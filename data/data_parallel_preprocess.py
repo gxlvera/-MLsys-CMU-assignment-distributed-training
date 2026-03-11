@@ -40,10 +40,12 @@ def split_data(
         please split the data uniformly across data parallel groups and
         do not shuffle the index as we will shuffle them later
     """
-
     """TODO: Your code here"""
+    # Data parallel group is determined first; model parallel ranks in the same group shoud share data
+    dp_rank = rank // mp_size
+    assert x_train.shape[0] % dp_size == 0
+    chunk = x_train.shape[0] // dp_size
+    start = dp_rank * chunk
+    end = start + chunk
 
-    # Try to get the correct start_idx and end_idx from dp_size, mp_size and rank and return
-    # the corresponding data
-
-    raise NotImplementedError
+    return x_train[start:end], y_train[start:end]
